@@ -1,0 +1,195 @@
+import React from "react";
+import { Button, Form, Container, Row, Col } from "react-bootstrap"; // Assuming you're using Bootstrap
+import { useNavigate } from "react-router-dom";
+import { Formik } from "formik";
+import { signupSchema } from "./SignUpSchema";
+import axios from "axios";
+
+import Card from "react-bootstrap/Card";
+
+const initialValues = {
+  username: "",
+  email: "",
+  country: "",
+  img: "",
+  city: "",
+  phone: "",
+  password: "",
+  isAdmin: false,
+  confirm_password: "",
+};
+function FormValidation() {
+  const navigate = useNavigate();
+  const backgroundStyle = {
+    // backgroundImage:
+    //   'url("https://memes.co.in/wallpapers/uploads/1625904063.jpg")',
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+  };
+  //   const navigate = useNavigate();
+  return (
+    <Container className="my-5" style={backgroundStyle}>
+      <Row>
+        <Col>
+          <Card style={{ backgroundColor: "none" }}>
+            <Formik
+              initialValues={initialValues}
+              validationSchema={signupSchema}
+              onSubmit={(values) => {
+                axios
+                  .post("http://localhost:8800/api/auth/register", {
+                    username: values.username,
+                    email: values.email,
+                    country: values.country,
+                    img: values.img,
+                    city: values.city,
+                    phone: values.phone,
+                    password: values.password,
+                    isAdmin: true,
+                  })
+                  .then(() => navigate("/login"));
+              }}
+            >
+              {({
+                values,
+                errors,
+                touched,
+                handleBlur,
+                handleChange,
+                handleSubmit,
+              }) => (
+                <Row className="justify-content-center">
+                  <Col md={6}>
+                    <Form
+                      onSubmit={handleSubmit}
+                      style={{
+                        background: "rgba(255, 255, 255, 0.8)",
+                        padding: "20px",
+                        borderRadius: "10px",
+                      }}
+                    >
+                      <h4 className="mb-4">Register Form</h4>
+                      <Form.Group>
+                        <Form.Label htmlFor="username">Name:</Form.Label>
+                        <Form.Control
+                          type="text"
+                          autoComplete="off"
+                          name="username"
+                          id="username"
+                          placeholder="Name"
+                          value={values.username}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                        />
+                        {errors.username && touched.username ? (
+                          <p className="form-error">{errors.username}</p>
+                        ) : null}
+                      </Form.Group>
+                      <Form.Group>
+                        <Form.Label htmlFor="email">Email:</Form.Label>
+                        <Form.Control
+                          type="email"
+                          autoComplete="off"
+                          name="email"
+                          id="email"
+                          placeholder="Email"
+                          value={values.email}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                        />
+                        {errors.email && touched.email ? (
+                          <p className="form-error">{errors.email}</p>
+                        ) : null}
+                      </Form.Group>
+                      <Form.Group>
+                        <Form.Label htmlFor="phone">Phone no.</Form.Label>
+                        <Form.Control
+                          type="text"
+                          autoComplete="off"
+                          name="phone"
+                          id="phone"
+                          placeholder="03XX-XXXXXXX"
+                          value={values.phone}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                        />
+                      </Form.Group>
+                      <Form.Group>
+                        <Form.Label htmlFor="country">Country:</Form.Label>
+                        <Form.Control
+                          type="text"
+                          autoComplete="off"
+                          name="country"
+                          id="country"
+                          placeholder="Country"
+                          value={values.country}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                        />
+                      </Form.Group>
+                      <Form.Group>
+                        <Form.Label htmlFor="city">City:</Form.Label>
+                        <Form.Control
+                          type="text"
+                          autoComplete="off"
+                          name="city"
+                          id="city"
+                          placeholder="City"
+                          value={values.city}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                        />
+                      </Form.Group>
+                      <Form.Group>
+                        <Form.Label htmlFor="password">Password:</Form.Label>
+                        <Form.Control
+                          type="password"
+                          autoComplete="off"
+                          name="password"
+                          id="password"
+                          placeholder="Password"
+                          value={values.password}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                        />
+                        {errors.password && touched.password ? (
+                          <p className="form-error">{errors.password}</p>
+                        ) : null}
+                      </Form.Group>
+                      <Form.Group>
+                        <Form.Label htmlFor="confirm_password">
+                          Confirm Password:
+                        </Form.Label>
+                        <Form.Control
+                          type="password"
+                          autoComplete="off"
+                          name="confirm_password"
+                          id="confirm_password"
+                          placeholder="Confirm Password"
+                          value={values.confirm_password}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                        />
+                        {errors.confirm_password && touched.confirm_password ? (
+                          <p className="form-error">
+                            {errors.confirm_password}
+                          </p>
+                        ) : null}
+                      </Form.Group>
+                      <Button variant="success" type="submit" className="my-3">
+                        Register
+                      </Button>
+                    </Form>
+                  </Col>
+                </Row>
+              )}
+            </Formik>
+          </Card>
+        </Col>
+        <Col></Col>
+      </Row>
+    </Container>
+  );
+}
+
+export default FormValidation;
