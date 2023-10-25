@@ -3,25 +3,36 @@ const TaxiBookingSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
+      ref: "User",
       required: true,
     },
     taxiId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Taxi',
+      ref: "Taxi",
       required: true,
+    },
+    name: {
+      type: String,
+      required: true,
+    },
+    taxiName: {
+      type: String,
+      required: true,
+    },
+    city: {
+      type: String,
     },
     bookedFrom: {
       type: Date,
       required: true,
     },
-    bookedTill:{
-        type: Date,
-        required: true,
+    bookedTill: {
+      type: Date,
+      required: true,
     },
-    totalPrice:{
+    totalPrice: {
       type: Number,
-    }
+    },
   },
   { timestamps: true }
 );

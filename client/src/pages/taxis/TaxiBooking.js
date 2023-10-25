@@ -11,6 +11,8 @@ import Navbar from "../../components/navbar/Navbar";
 import Header from "../../components/header/Header";
 import Footer from "../../components/footer/Footer";
 
+import ReserveTaxi from "./ReserveTaxi";
+
 function TaxiBooking() {
   const [taxiData, setTaxiData] = useState(null);
   const location = useLocation();
@@ -32,25 +34,25 @@ function TaxiBooking() {
 
   return (
     <div>
-      <Navbar style />
-      <Header type="list" />
       <Container style={{ fontSize: "16px" }}>
         <Row>
-          <Col></Col>
+          <Col className="col-sm-8">
+            <h2 className="px-4">Booking Details</h2>
+            <ReserveTaxi taxiData={taxiData} />
+          </Col>
           <Col>
-            <h1>Taxi Details</h1>
+            <h2>Taxi Details</h2>
             {taxiData ? (
               <Card
                 style={{
                   width: "100%",
                 }}
+                className="card p-3 bg-light"
               >
                 <Card.Img
                   variant="top"
                   src={taxiData.imageUrl}
                   alt={taxiData.carModel}
-                  height="400vh"
-                  width="auto"
                 />
                 <Card.Body>
                   <Card.Title>{taxiData.carModel}</Card.Title>

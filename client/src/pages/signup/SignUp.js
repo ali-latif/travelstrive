@@ -23,15 +23,15 @@ function FormValidation() {
   const backgroundStyle = {
     // backgroundImage:
     //   'url("https://memes.co.in/wallpapers/uploads/1625904063.jpg")',
-    backgroundSize: "cover",
-    backgroundPosition: "center",
+
+    margin: "24rem",
   };
   //   const navigate = useNavigate();
   return (
-    <Container className="my-5" style={backgroundStyle}>
+    <Container className="my-5 mx-10 " style={backgroundStyle}>
       <Row>
         <Col>
-          <Card style={{ backgroundColor: "none" }}>
+          <Card>
             <Formik
               initialValues={initialValues}
               validationSchema={signupSchema}
@@ -59,16 +59,16 @@ function FormValidation() {
                 handleSubmit,
               }) => (
                 <Row className="justify-content-center">
-                  <Col md={6}>
+                  <Col>
                     <Form
                       onSubmit={handleSubmit}
                       style={{
-                        background: "rgba(255, 255, 255, 0.8)",
+                        background: "rgba(240, 240, 240)",
                         padding: "20px",
                         borderRadius: "10px",
                       }}
                     >
-                      <h4 className="mb-4">Register Form</h4>
+                      <h3 className="mb-4 text-success">Register Form</h3>
                       <Form.Group>
                         <Form.Label htmlFor="username">Name:</Form.Label>
                         <Form.Control

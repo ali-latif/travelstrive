@@ -75,9 +75,13 @@ const Login = () => {
     //     </span>
     //   </div>
     // </div>
-    <div className="col-lg-5" style={{ margin: "5rem 25rem" }}>
-      <div className="card border-0">
-        <div className="card-header bg-primary text-center p-4">
+
+    <div
+      className="col-lg-5 border border-success rounded"
+      style={{ margin: "5rem 25rem" }}
+    >
+      <div className="card border-0 ">
+        <div className="card-header bg-success text-center p-4">
           <h1 className="text-white m-0">Log In Now</h1>
         </div>
         <div className="card-body rounded-bottom bg-white p-5">
@@ -85,7 +89,7 @@ const Login = () => {
             <div className="form-group">
               <input
                 type="text"
-                className="form-control p-4 lInput"
+                className="form-control p-3 lInput mb-2"
                 placeholder="Your name"
                 required="required"
                 id="username"
@@ -99,12 +103,12 @@ const Login = () => {
                 placeholder="password"
                 id="password"
                 onChange={handleChange}
-                className="lInput form-control p-4"
+                className="lInput form-control p-3 mb-3"
               />
             </div>
             <div>
               <Button
-                className="btn btn-primary btn-block py-3"
+                className="btn btn-success btn-block py-2 px-4 mb-2 fw-bolder"
                 type="submit"
                 onClick={handleClick}
               >

@@ -10,10 +10,16 @@ import Taxi from "./pages/taxis/Taxi";
 import TaxiBooking from "./pages/taxis/TaxiBooking";
 import ContactUs from "./pages/ContactUs/ContactUs";
 import Profile from "./pages/profile/profile";
+import Header from "./components/header/Header";
+import Navbar from "./components/navbar/Navbar";
+import Footer from "./components/footer/Footer";
+import Orders from "./pages/profile/orders";
 
 function App() {
   return (
     <BrowserRouter>
+      <Navbar style />
+      <Header type="list" />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/hotels" element={<List />} />
@@ -21,10 +27,12 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
         <Route path="/:id" element={<Profile />} />
+        <Route path="/orders" element={<Orders />} />
         <Route path="/contact-us" element={<ContactUs />} />
         <Route path="/taxi" element={<Taxi />} />
         <Route path="/taxi-booking/:id" element={<TaxiBooking />} />
       </Routes>
+      <Footer />
     </BrowserRouter>
   );
 }

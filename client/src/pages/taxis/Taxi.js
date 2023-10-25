@@ -1,21 +1,24 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
 import Card from "react-bootstrap/Card";
 import ListGroup from "react-bootstrap/ListGroup";
-import Navbar from "../../components/navbar/Navbar";
-import Header from "../../components/header/Header";
-import Footer from "../../components/footer/Footer";
+import Button from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFilter } from "@fortawesome/free-solid-svg-icons";
 
 function Taxi() {
   const [taxis, setTaxis] = useState([]);
+  const [sortedTaxis, setSortedTaxis] = useState([]);
+  const [sortOption, setSortOption] = useState(null);
+
   useEffect(() => {
     const getTaxis = async () => {
       try {
         const taxiList = await axios.get(`http://localhost:8800/api/gettaxi`);
         if (taxiList.data) {
           setTaxis(taxiList.data);
+          setSortedTaxis(taxiList.data);
         }
       } catch (error) {
         console.log(error);
@@ -24,23 +27,63 @@ function Taxi() {
     getTaxis();
   }, []);
 
+  const handleSort = (sortBy) => {
+    const sortedData = [...sortedTaxis];
+
+    if (sortOption === sortBy) {
+      sortedData.reverse();
+    } else {
+      sortedData.sort((a, b) => {
+        if (sortBy === "maxPeople") {
+          return a.maxPeople - b.maxPeople;
+        } else if (sortBy === "price") {
+          return a.price - b.price;
+        }
+        return 0;
+      });
+    }
+
+    setSortedTaxis(sortedData);
+    setSortOption(sortBy);
+  };
+
   return (
     <div>
-      <Navbar style />
-      <Header type="list" />
-      {taxis ? (
+      <div className="mt-4 mx-5">
+        <FontAwesomeIcon
+          icon={faFilter}
+          color="green"
+          fontSize="30px"
+          style={{ marginRight: "10px" }}
+        />
+        <Button
+          variant="outline-success"
+          onClick={() => handleSort("maxPeople")}
+          className={`mr-3 ${sortOption === "maxPeople" ? "active" : ""}`}
+        >
+          Sort by Max People
+        </Button>
+        <Button
+          variant="outline-success"
+          onClick={() => handleSort("price")}
+          className={`mr-3 ${sortOption === "price" ? "active" : ""}`}
+        >
+          Sort by Price
+        </Button>
+      </div>
+      {sortedTaxis.length > 0 ? (
         <div
           style={{
             display: "flex",
             flexWrap: "wrap",
           }}
         >
-          {taxis.map((m) => {
+          {sortedTaxis.map((m) => {
             return (
               <div
                 key={m._id}
                 style={{
-                  flexBasis: "calc(30% - 2.4rem)", // 33.33% width for each card with margin
+                  flexBasis: "calc(30% - 2.4rem)",
                   margin: "2.4rem",
                 }}
               >
@@ -82,7 +125,6 @@ function Taxi() {
       ) : (
         <div>No Cars Available</div>
       )}
-      <Footer />
     </div>
   );
 }

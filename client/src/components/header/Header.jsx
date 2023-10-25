@@ -1,30 +1,37 @@
-import React from "react";
-
+import React, { useEffect } from "react";
+import "../navbar/navbar.css";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
+import { useContext, useState, useRef } from "react";
 import {
   faBed,
   faCalendarDays,
-  faCar,
   faPerson,
-  faPlane,
   faTaxi,
   faContactBook,
-  faContactCard,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./header.css";
-import "../navbar/navbar.css";
 import { DateRange } from "react-date-range";
-import { useContext, useState } from "react";
 import "react-date-range/dist/styles.css"; // main css file
 import "react-date-range/dist/theme/default.css"; // theme css file
 import { format } from "date-fns";
-import { Link, useNavigate, useLocation } from "react-router-dom";
 import { SearchContext } from "../../context/SearchContext";
-import { AuthContext } from "../../context/AuthContext";
+import Dropdown from "react-bootstrap/Dropdown";
+import DropdownButton from "react-bootstrap/DropdownButton";
+// const navigate = useNavigate();
 
 const Header = ({ type }) => {
   const [destination, setDestination] = useState("");
   const [openDate, setOpenDate] = useState(false);
+  const [openOptions, setOpenOptions] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  const [options, setOptions] = useState({
+    adult: 1,
+    children: 0,
+    room: 1,
+  });
   const [dates, setDates] = useState([
     {
       startDate: new Date(),
@@ -32,16 +39,17 @@ const Header = ({ type }) => {
       key: "selection",
     },
   ]);
-  const [openOptions, setOpenOptions] = useState(false);
-  const [options, setOptions] = useState({
-    adult: 1,
-    children: 0,
-    room: 1,
-  });
 
+  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
-  const { user } = useContext(AuthContext);
+  const { dispatch } = useContext(SearchContext);
+
+  const logthisout = () => {
+    localStorage.clear();
+    window.location.reload();
+    //alert("Great Shot!");
+  };
 
   const handleOption = (name, operation) => {
     setOptions((prev) => {
@@ -52,32 +60,43 @@ const Header = ({ type }) => {
     });
   };
 
-  const { dispatch } = useContext(SearchContext);
-
   const handleSearch = () => {
     dispatch({ type: "NEW_SEARCH", payload: { destination, dates, options } });
     navigate("/hotels", { state: { destination, dates, options } });
   };
-  const [isDropdownOpen, setDropdownOpen] = useState(false);
-
-  // const navigate = useNavigate();
-  const logthisout = () => {
-    localStorage.clear();
-    window.location.reload();
-    //alert("Great Shot!");
-  };
 
   const toggleDropdown = () => {
-    setDropdownOpen(!isDropdownOpen);
+    setIsDropdownOpen(!isDropdownOpen);
   };
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    }
+
+    window.addEventListener("click", handleClickOutside);
+
+    return () => {
+      window.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <div className="header">
+    <div
+      className="header"
+      style={{
+        paddingLeft: "120px",
+        ...(isDropdownOpen ? { marginBottom: "64px" } : {}),
+      }}
+    >
       <div
         className={
           type === "list" ? "headerContainer listMode" : "headerContainer"
         }
       >
-        <div className="headerList">
+        <div className="headerList ">
           <div
             className={`headerListItem ${
               location.pathname === "/" ? "active" : ""
@@ -112,14 +131,11 @@ const Header = ({ type }) => {
             </Link>
           </div>
         </div>
-        {type !== "list" && (
+        {location.pathname === "/" && (
           <>
-            <h1 className="headerTitle">
-              A lifetime of discounts? It's Genius.
-            </h1>
-            <p className="headerDesc">Wanna Book Room?</p>
+            <p className="headerDesc ">Wanna Book Room?</p>
             {/* {!user && <button className="headerBtn">Sign in / Register</button>} */}
-            <div className="headerSearch" style={{ padding: "1.4rem" }}>
+            <div className="headerSearch py-4" style={{ marginRight: "12px" }}>
               <div className="headerSearchItem">
                 <FontAwesomeIcon icon={faBed} className="headerIcon" />
                 <input
@@ -232,48 +248,37 @@ const Header = ({ type }) => {
           </>
         )}
       </div>
-      <div>
-        <div className="navbar" style={{ marginLeft: "-10rem" }}>
-          <span>{user.username}&nbsp;&nbsp;</span>
+      <div className="navContainer" style={{ marginLeft: "450px" }}>
+        {user ? (
+          <div>
+            <div className="navbar" style={{ marginLeft: "-10rem" }}>
+              <Dropdown>
+                <Dropdown.Toggle variant="success" id="dropdown-basic">
+                  <span>{user.username}&nbsp;&nbsp;</span>
+                  <i
+                    className="fa fa-user border border-white rounded-circle p-1"
+                    aria-hidden="true"
+                  ></i>
+                </Dropdown.Toggle>
 
-          <div className="profile-icon " onClick={toggleDropdown}>
-            <i
-              className="fa fa-user"
-              aria-hidden="true"
-              style={{ marginLeft: "-7rem" }}
-            ></i>
-          </div>
-          {isDropdownOpen && (
-            <div className="options ">
-              <div style={{ listStyleType: "none" }}>
-                <Link
-                  to="/:id"
-                  style={{ color: "grey", textDecoration: "none" }}
-                >
-                  <span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Profile </span>
-                </Link>
-                <button
-                  className="navButton dropdown-item"
-                  style={{ color: "grey" }}
-                >
-                  Orders &nbsp;&nbsp;&nbsp;
-                </button>
-                <Link
-                  to="/login"
-                  style={{ color: "grey", textDecoration: "none" }}
-                >
-                  <button
-                    className="navButton dropdown-item"
-                    // onClick={logthisout}
-                    style={{ color: "red" }}
-                  >
-                    Logout &nbsp;&nbsp;&nbsp;
-                  </button>
-                </Link>
-              </div>
+                <Dropdown.Menu>
+                  <Dropdown.Item href="/:id">Profile</Dropdown.Item>
+                  <Dropdown.Item href="/orders">Orders</Dropdown.Item>
+                  <Dropdown.Item onClick={logthisout} style={{ color: "red" }}>
+                    Logout
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
             </div>
-          )}
-        </div>
+          </div>
+        ) : (
+          <div className="navItems">
+            {/* <button className="navButton">Register</button> */}
+            <Link to="/Login">
+              <button className="navButton">Login</button>
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -10,10 +10,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 const transporter = nodemailer.createTransport({
-  service: "Gmail", // Use the appropriate email service name
+  service: "Gmail",
   auth: {
-    user: process.env.EMAIL, // Your Gmail email address
-    pass: process.env.PASSWORD, // Your Gmail password or an App Password if you have two-factor authentication enabled
+    user: process.env.EMAIL,
+    pass: process.env.PASSWORD,
   },
 });
 
@@ -34,17 +34,19 @@ app.post("/send", (req, res, next) => {
 
   var mail = {
     from: email, // You can set the sender's email address here
-    to: "alillatif003@gmail.com", // Replace with the recipient's email address
+    to: "lil.ali.latif@gmail.com", // Replace with the recipient's email address
     subject: subject,
     text: message,
   };
 
   transporter.sendMail(mail, (err, data) => {
     if (err) {
+      console.error(err);
       res.json({
         status: "fail",
       });
     } else {
+      console.log("Email sent successfully");
       res.json({
         status: "success",
       });
@@ -53,5 +55,5 @@ app.post("/send", (req, res, next) => {
 });
 
 app.listen(8800, () => {
-  console.log("Server is running on port 3000");
+  console.log("Server is running on port 8800");
 });

@@ -36,6 +36,7 @@ const Navbar = () => {
             <Link to="/" style={{ color: "grey", textDecoration: "none" }}>
               <img
                 src="./img/logo.png"
+                alt="logo"
                 height={50}
                 style={{ marginRight: "3.6rem" }}
               />
