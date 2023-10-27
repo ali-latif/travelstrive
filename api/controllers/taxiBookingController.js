@@ -1,5 +1,4 @@
 import TaxiBooking from "../models/TaxiBooking.js";
-import Taxi from "../models/Taxi.js";
 
 export const addTaxiBooking = async (req, res, next) => {
   try {
@@ -26,5 +25,34 @@ export const getTaxiBooking = async (req, res) => {
     res.status(200).json(taxiBookingList);
   } catch (error) {
     console.log("Cannot get Taxi Booking List", error);
+  }
+};
+
+export const updateTaxiBooking = async (req, res, next) => {
+  try {
+    const updatedTaxiBooking = await TaxiBooking.findByIdAndUpdate(
+      req.params.id,
+      { $set: req.body },
+      { new: true }
+    );
+    res.status(200).json(updatedTaxiBooking);
+  } catch (err) {
+    next(err);
+  }
+};
+export const deleteTaxiBooking = async (req, res, next) => {
+  try {
+    const bookingId = req.params.id;
+    if (!bookingId) {
+      return res.status(400).json({ message: "Invalid booking ID." });
+    }
+    const deletedBooking = await TaxiBooking.findByIdAndDelete(bookingId);
+    if (!deletedBooking) {
+      return res.status(404).json({ message: "Booking not found." });
+    }
+
+    res.status(200).json("TaxiBooking has been deleted.");
+  } catch (err) {
+    next(err);
   }
 };

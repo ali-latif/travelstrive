@@ -7,9 +7,6 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import ListGroup from "react-bootstrap/ListGroup";
-import Navbar from "../../components/navbar/Navbar";
-import Header from "../../components/header/Header";
-import Footer from "../../components/footer/Footer";
 
 import ReserveTaxi from "./ReserveTaxi";
 

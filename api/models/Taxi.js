@@ -19,7 +19,6 @@ const TaxiSchema = new mongoose.Schema(
     },
     imageUrl: {
       type: String,
-      required: true,
     },
   },
   { timestamps: true }

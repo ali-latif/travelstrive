@@ -5,6 +5,8 @@ import Card from "react-bootstrap/Card";
 import ListGroup from "react-bootstrap/ListGroup";
 import { AuthContext } from "../../context/AuthContext";
 import { Link } from "react-router-dom";
+import Spinner from "react-bootstrap/Spinner";
+import { Button } from "react-bootstrap";
 
 function Orders() {
   const { user } = useContext(AuthContext);
@@ -26,6 +28,16 @@ function Orders() {
     getOrders();
   }, []);
 
+  const handleDeleteOrder = async (bookingId) => {
+    try {
+      const response = await axios
+        .delete(`http://localhost:8800/api/deletetaxi-booking/${bookingId}`)
+        .then(() => window.location.reload());
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div>
       {orders ? (
@@ -37,7 +49,7 @@ function Orders() {
         >
           {orders.map((m) => {
             // Filter orders to include only the ones that match the user's _id
-            if (user && m.userId === user._id) {
+            if ((user && m.userId === user._id) || user.role === "admin") {
               return (
                 <div
                   key={m._id}
@@ -65,13 +77,29 @@ function Orders() {
                       </ListGroup.Item>
                       <ListGroup.Item>
                         <b>Booked At </b>
-                        {new Date(m.createdAt).toISOString().split("T")[0]}
+                        {new Date(m.createdAt).toISOString().split("T")[0]}{" "}
+                        <span>(</span>
+                        {
+                          new Date(m.createdAt)
+                            .toISOString()
+                            .split("T")[1]
+                            .split(".")[0]
+                        }
+                        <span>)</span>
                       </ListGroup.Item>
                       <ListGroup.Item>
                         <b>Price: </b>
                         Rs.{m.totalPrice}
                       </ListGroup.Item>
                     </ListGroup>
+                    <Card.Body>
+                      <Button
+                        variant="danger"
+                        onClick={() => handleDeleteOrder(m._id)}
+                      >
+                        Delete Booking
+                      </Button>
+                    </Card.Body>
                   </Card>
                 </div>
               );
@@ -81,7 +109,23 @@ function Orders() {
           })}
         </div>
       ) : (
-        <div>No Bookings Available</div>
+        <div
+          style={{
+            width: "100vw",
+            height: "100vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Spinner
+            animation="border"
+            role="status"
+            style={{ width: "5rem", height: "5rem" }}
+          >
+            <span className="visually-hidden">Loading...</span>
+          </Spinner>
+        </div>
       )}
     </div>
   );

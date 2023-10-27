@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import React from "react";
 
 import Home from "./pages/home/Home";
@@ -14,26 +14,39 @@ import Header from "./components/header/Header";
 import Navbar from "./components/navbar/Navbar";
 import Footer from "./components/footer/Footer";
 import Orders from "./pages/profile/orders";
+import AdminDashboard from "./admin/adminDashBoard";
+import Stripe from "./pages/payment/Stripe";
+import AddTaxi from "./pages/taxis/AddTaxi";
 
 function App() {
+  const location = useLocation();
+  const isLoginPage = location.pathname === "/login";
+  const adminPage = location.pathname === "/admin-dashboard";
   return (
-    <BrowserRouter>
-      <Navbar style />
-      <Header type="list" />
+    <div>
+      {isLoginPage ? null : <Navbar style />}
+      {isLoginPage ? null : <Header type="list" />}
+
+      {/* <Navbar style /> */}
+      {/* <Header type="list" /> */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/hotels" element={<List />} />
         <Route path="/hotels/:id" element={<Hotel />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/:id" element={<Profile />} />
         <Route path="/orders" element={<Orders />} />
         <Route path="/contact-us" element={<ContactUs />} />
         <Route path="/taxi" element={<Taxi />} />
+        <Route path="/add-taxi" element={<AddTaxi />} />
+        <Route path="/payment" element={<Stripe />} />
+
         <Route path="/taxi-booking/:id" element={<TaxiBooking />} />
       </Routes>
-      <Footer />
-    </BrowserRouter>
+      {isLoginPage ? null : <Footer style />}
+    </div>
   );
 }
 

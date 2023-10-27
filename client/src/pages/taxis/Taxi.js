@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import Card from "react-bootstrap/Card";
 import ListGroup from "react-bootstrap/ListGroup";
@@ -6,6 +6,8 @@ import Button from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
+import Spinner from "react-bootstrap/Spinner";
+import { AuthContext } from "../../context/AuthContext";
 
 function Taxi() {
   const [taxis, setTaxis] = useState([]);
@@ -46,6 +48,16 @@ function Taxi() {
     setSortedTaxis(sortedData);
     setSortOption(sortBy);
   };
+  const handleDeleteTaxi = async (bookingId) => {
+    try {
+      const response = await axios
+        .delete(`http://localhost:8800/api/deletetaxi/${bookingId}`)
+        .then(() => window.location.reload());
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const { user } = useContext(AuthContext);
 
   return (
     <div>
@@ -70,7 +82,18 @@ function Taxi() {
         >
           Sort by Price
         </Button>
+        {user.role === "admin" && (
+          <Link
+            to="/add-taxi"
+            style={{ color: "white", textDecoration: "none" }}
+          >
+            <Button style={{ marginLeft: "84px" }} variant="success">
+              Add Car
+            </Button>
+          </Link>
+        )}
       </div>
+
       {sortedTaxis.length > 0 ? (
         <div
           style={{
@@ -115,7 +138,19 @@ function Taxi() {
                     </ListGroup.Item>
                   </ListGroup>
                   <Card.Body>
-                    <Link to={`/taxi-booking/${m._id}`}>Book Car</Link>
+                    {user.role !== "admin" && (
+                      <Link to={`/taxi-booking/${m._id}`}>Book Car</Link>
+                    )}
+                  </Card.Body>
+                  <Card.Body>
+                    {user.role === "admin" && (
+                      <Button
+                        variant="danger"
+                        onClick={() => handleDeleteTaxi(m._id)}
+                      >
+                        Delete Car
+                      </Button>
+                    )}
                   </Card.Body>
                 </Card>
               </div>
@@ -123,7 +158,23 @@ function Taxi() {
           })}
         </div>
       ) : (
-        <div>No Cars Available</div>
+        <div
+          style={{
+            width: "100vw",
+            height: "100vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Spinner
+            animation="border"
+            role="status"
+            style={{ width: "5rem", height: "5rem" }}
+          >
+            <span className="visually-hidden">Loading...</span>
+          </Spinner>
+        </div>
       )}
     </div>
   );

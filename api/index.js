@@ -11,6 +11,7 @@ import taxiBookingRoute from "./routes/taxiBookingRoute.js";
 
 import cookieParser from "cookie-parser";
 import cors from "cors";
+// import { MakePayment } from "./stripe/stripeConfig.js";
 
 const app = express();
 dotenv.config();
@@ -39,6 +40,7 @@ app.use("/api/hotels", hotelsRoute);
 app.use("/api/rooms", roomsRoute);
 app.use("/api", taxiRoute);
 app.use("/api", taxiBookingRoute);
+// app.use("/makepayment", MakePayment);
 
 app.use((err, req, res, next) => {
   const errorStatus = err.status || 500;

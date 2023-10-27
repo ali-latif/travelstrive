@@ -18,15 +18,12 @@ import "react-date-range/dist/theme/default.css"; // theme css file
 import { format } from "date-fns";
 import { SearchContext } from "../../context/SearchContext";
 import Dropdown from "react-bootstrap/Dropdown";
-import DropdownButton from "react-bootstrap/DropdownButton";
 // const navigate = useNavigate();
 
 const Header = ({ type }) => {
   const [destination, setDestination] = useState("");
   const [openDate, setOpenDate] = useState(false);
   const [openOptions, setOpenOptions] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const dropdownRef = useRef(null);
   const [options, setOptions] = useState({
     adult: 1,
     children: 0,
@@ -40,15 +37,23 @@ const Header = ({ type }) => {
     },
   ]);
 
-  const { user } = useContext(AuthContext);
+  const [userState, setUserState] = useState();
+
+  var { user } = useContext(AuthContext);
+  useEffect(() => {
+    setUserState(user);
+  }, [user]);
   const navigate = useNavigate();
   const location = useLocation();
   const { dispatch } = useContext(SearchContext);
 
   const logthisout = () => {
     localStorage.clear();
-    window.location.reload();
+    setUserState("");
+    // console.log(user);
+    // window.location.reload();
     //alert("Great Shot!");
+    navigate("/login");
   };
 
   const handleOption = (name, operation) => {
@@ -65,30 +70,11 @@ const Header = ({ type }) => {
     navigate("/hotels", { state: { destination, dates, options } });
   };
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
-
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsDropdownOpen(false);
-      }
-    }
-
-    window.addEventListener("click", handleClickOutside);
-
-    return () => {
-      window.removeEventListener("click", handleClickOutside);
-    };
-  }, []);
-
   return (
     <div
       className="header"
       style={{
         paddingLeft: "120px",
-        ...(isDropdownOpen ? { marginBottom: "64px" } : {}),
       }}
     >
       <div
@@ -254,7 +240,7 @@ const Header = ({ type }) => {
             <div className="navbar" style={{ marginLeft: "-10rem" }}>
               <Dropdown>
                 <Dropdown.Toggle variant="success" id="dropdown-basic">
-                  <span>{user.username}&nbsp;&nbsp;</span>
+                  <span>{userState?.username}&nbsp;&nbsp;</span>
                   <i
                     className="fa fa-user border border-white rounded-circle p-1"
                     aria-hidden="true"

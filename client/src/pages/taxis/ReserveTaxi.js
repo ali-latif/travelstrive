@@ -4,6 +4,8 @@ import axios from "axios";
 import { DateRange } from "react-date-range";
 import { AuthContext } from "../../context/AuthContext";
 import "react-date-range/dist/styles.css"; // Import the styles
+import { faCheckSquare } from "@fortawesome/free-solid-svg-icons";
+// import { useLocation } from "react-router-dom";
 // import DatePicker from "react-datepicker";
 // import "react-datepicker/dist/react-datepicker.css";
 
@@ -20,6 +22,7 @@ const ReserveTaxi = ({ taxiData }) => {
   ]);
   const [showCalendar, setShowCalendar] = useState(false);
   const [totalPriceTaxi, setTotalPriceTaxi] = useState(0);
+  const [message, setMessage] = useState("");
   const [sDate, setSDate] = useState();
   const [eDate, setEDate] = useState();
 
@@ -27,11 +30,6 @@ const ReserveTaxi = ({ taxiData }) => {
 
   const { user } = useContext(AuthContext);
   const [iid, setIID] = useState("");
-
-  // setDetail(user);
-  // if (user) {
-  //   console.log(user);
-  // }
 
   useEffect(() => {
     const totalDays =
@@ -41,8 +39,6 @@ const ReserveTaxi = ({ taxiData }) => {
 
     setTotalPriceTaxi(totalPrice);
   }, [dateRange]);
-  // sDate = dateRange[0].startDate.toDateString();
-  // eDate = dateRange[0].endDate.toDateString();
 
   const handleSelect = (ranges) => {
     setDateRange([ranges.selection]);
@@ -50,24 +46,19 @@ const ReserveTaxi = ({ taxiData }) => {
       setEDate(dateRange[0].endDate.toDateString());
       setSDate(dateRange[0].startDate.toDateString());
     }
-    // console.log("user", user);
     setIID(user._id);
   };
   const handleBooking = () => {
     console.log("Booking successful");
   };
-
   return (
     <Formik
       initialValues={{
         name: "",
         city: "",
-
         totalPrice: 0,
       }}
       onSubmit={(values, { setSubmitting }) => {
-        // console.log("values ", values);
-        // console.log(iid);
         const data = {
           userId: iid,
           taxiId: taxiData?._id,
@@ -85,6 +76,7 @@ const ReserveTaxi = ({ taxiData }) => {
           .then((response) => {
             console.log("Booking successful", response.data);
             handleBooking();
+            setMessage("Booking Successfull");
           })
           .catch((error) => {
             console.error("Error:", error);
@@ -100,6 +92,10 @@ const ReserveTaxi = ({ taxiData }) => {
         handleSubmit,
       }) => (
         <div style={{ margin: "30px", paddingRight: "100px" }}>
+          <h6 className="text-success">
+            {/* {message === "" ? "" : faCheckSquare} */}
+            {message}
+          </h6>
           <form className="card p-3 bg-light" onSubmit={handleSubmit}>
             <div className="form-group row my-2 ">
               <label htmlFor="name" className="col-sm-2 col-form-label">
@@ -116,6 +112,9 @@ const ReserveTaxi = ({ taxiData }) => {
                   onBlur={handleBlur}
                 />
               </div>
+              {errors.name && touched.name ? (
+                <p className="form-error">{errors.name}</p>
+              ) : null}
             </div>
             <div className="form-group row my-2">
               <label htmlFor="city" className="col-sm-2 col-form-label">
@@ -132,6 +131,9 @@ const ReserveTaxi = ({ taxiData }) => {
                   onBlur={handleBlur}
                 />
               </div>
+              {errors.city && touched.city ? (
+                <p className="form-error">{errors.city}</p>
+              ) : null}
             </div>
             <div className="form-group row my-2">
               <label htmlFor="people" className="col-sm-2 col-form-label">
@@ -208,17 +210,6 @@ const ReserveTaxi = ({ taxiData }) => {
                 </div>
               </div>
             </div>
-            {/* <div className="form-group row my-2">
-          <div className="col-sm-4">Driver reuired</div>
-          <div className="col-sm-4">
-            <div className="form-check">
-              <input className="form-check-input" type="checkbox" id="gridCheck1" />
-              <label className="form-check-label" htmlFor="gridCheck1">
-                Yes
-              </label>
-            </div>
-          </div>
-        </div> */}
             <div className="form-group row my-2">
               <div className="col-sm-10">
                 <button type="submit" className="btn btn-primary">
