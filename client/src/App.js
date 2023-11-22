@@ -17,6 +17,9 @@ import Orders from "./pages/profile/orders";
 import AdminDashboard from "./admin/adminDashBoard";
 import Stripe from "./pages/payment/Stripe";
 import AddTaxi from "./pages/taxis/AddTaxi";
+import TourBooking from "./pages/group-tours/TourBooking";
+import Tour from "./pages/group-tours/Tour";
+import AddTour from "./pages/group-tours/AddTour";
 
 function App() {
   const location = useLocation();
@@ -39,10 +42,12 @@ function App() {
         <Route path="/:id" element={<Profile />} />
         <Route path="/orders" element={<Orders />} />
         <Route path="/contact-us" element={<ContactUs />} />
+        <Route path="/tour" element={<Tour />} />
+        <Route path="/add-tour" element={<AddTour />} />
         <Route path="/taxi" element={<Taxi />} />
         <Route path="/add-taxi" element={<AddTaxi />} />
+        <Route path="/tour-booking/:id" element={<TourBooking />} />
         <Route path="/payment" element={<Stripe />} />
-
         <Route path="/taxi-booking/:id" element={<TaxiBooking />} />
       </Routes>
       {isLoginPage ? null : <Footer style />}
